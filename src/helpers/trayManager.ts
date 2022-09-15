@@ -23,7 +23,6 @@ import { getMainWindow } from "./getMainWindow";
 // bring the settings into scoped
 const {
   trayEnabled,
-  seenMinimizeToTrayWarning,
   monochromeIconEnabled,
   showIconsInRecentConversationTrayEnabled,
   trayIconRedDotEnabled,
@@ -51,6 +50,10 @@ export class TrayManager {
     trayIconRedDotEnabled.subscribe(() => {
       this.tray?.setImage(this.getIconPath());
     });
+
+    settings.showIconsInRecentConversationTrayEnabled.subscribe(() =>
+      this.refreshTrayMenu()
+    );
   }
 
   public startIfEnabled(): void {
@@ -156,19 +159,6 @@ export class TrayManager {
     this.destroyEventListeners();
     this.tray?.destroy();
     this.tray = null;
-  }
-
-  public showMinimizeToTrayWarning(): void {
-    if (IS_WINDOWS && trayEnabled.value) {
-      if (!seenMinimizeToTrayWarning.value && this.tray != null) {
-        this.tray.displayBalloon({
-          title: "Android Messages",
-          content:
-            "Android Messages is still running in the background. To close it, use the File menu or right-click on the tray icon.",
-        });
-        seenMinimizeToTrayWarning.next(true);
-      }
-    }
   }
 
   public handleTrayEnabledToggle(newValue: boolean): void {
