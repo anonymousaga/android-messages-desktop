@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron";
+import { clipboard, ipcRenderer } from "electron";
 import path from "path";
 import {
   INITIAL_ICON_IMAGE,
@@ -12,6 +12,9 @@ import {
   recentThreadObserver,
 } from "./helpers/observers";
 import { getProfileImg } from "./helpers/profileImage";
+
+const OTP_REGEX =
+  /\d+(?=\sis)|(?:(?<=is\s)|(?<=is:\s)|(?<=code\s)|(?<=code:\s)|(?<=passcodes:\s)|(?<=use\s)|(?<=password:\s))\d+/gm;
 
 window.addEventListener("load", () => {
   if (IS_MAC) {
@@ -85,19 +88,21 @@ window.Notification = function (title: string, options: NotificationOptions) {
 
   const hideContent = ipcRenderer.sendSync("should-hide-notification-content");
 
-  const notificationOpts: NotificationOptions = hideContent
-    ? {
-        body: "Click to open",
-        icon: path.resolve(RESOURCES_PATH, "icons", "64x64.png"),
-      }
-    : {
-        icon: icon?.toDataURL(),
-        body: options.body || "",
-      };
+  const otpMatches = options.body?.toLowerCase().match(OTP_REGEX) ?? [];
+
+  const notificationOpts: NotificationOptions = {
+    body: hideContent ? "Click to open" : options.body,
+    icon: hideContent
+      ? path.resolve(RESOURCES_PATH, "icons", "64x64.png")
+      : icon?.toDataURL(),
+  };
 
   const newTitle = hideContent ? "New Message" : title;
   const notification = new OldNotification(newTitle, notificationOpts);
   notification.addEventListener("click", () => {
+    if (true && otpMatches.length > 0) {
+      clipboard.writeText(otpMatches[0], "clipboard");
+    }
     ipcRenderer.send("show-main-window");
     document.dispatchEvent(new Event("focus"));
   });
