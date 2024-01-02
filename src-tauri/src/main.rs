@@ -3,8 +3,10 @@
 
 use tauri::{
     CustomMenuItem, Manager, Menu, MenuItem, Runtime, Submenu, SystemTray, SystemTrayEvent,
-    SystemTrayMenu, SystemTrayMenuItem,
+    SystemTrayMenu, SystemTrayMenuItem, WindowEvent,
 };
+
+const MAIN_WINDOW: &str = "main";
 
 fn main() {
     let tray_menu = SystemTrayMenu::new()
@@ -15,7 +17,7 @@ fn main() {
         .system_tray(system_tray)
         .on_system_tray_event(|app, event| match event {
             SystemTrayEvent::DoubleClick { .. } => {
-                app.get_window("main").unwrap().show().unwrap();
+                app.get_window(MAIN_WINDOW).unwrap().show().unwrap();
             }
             SystemTrayEvent::MenuItemClick { tray_id, id, .. } => match id.as_str() {
                 "show" => {
@@ -30,6 +32,16 @@ fn main() {
             _ => {}
         })
         .on_page_load(|window, payload| {})
+        .on_window_event(|event| match event.event() {
+            WindowEvent::CloseRequested { api, .. } => {
+                let window = event.window();
+                if window.label() == MAIN_WINDOW {
+                    api.prevent_close();
+                    event.window().hide().expect("Failed to hide window");
+                }
+            }
+            _ => {}
+        })
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(|_app, event| match event {
