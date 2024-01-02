@@ -13,12 +13,15 @@ devDependencies:
   '@tauri-apps/cli':
     specifier: ^1.2.2
     version: 1.5.6
+  '@types/node':
+    specifier: ^20.9.0
+    version: 20.9.0
   typescript:
     specifier: ^4.8.2
     version: 4.9.5
   vite:
     specifier: ^4.0.0
-    version: 4.5.0
+    version: 4.5.0(@types/node@20.9.0)
 
 packages:
 
@@ -332,6 +335,12 @@ packages:
       '@tauri-apps/cli-win32-x64-msvc': 1.5.6
     dev: true
 
+  /@types/node@20.9.0:
+    resolution: {integrity: sha512-nekiGu2NDb1BcVofVcEKMIwzlx4NjHlcjhoxxKBNLtz15Y1z7MYf549DFvkHSId02Ax6kGwWntIBPC3l/JZcmw==}
+    dependencies:
+      undici-types: 5.26.5
+    dev: true
+
   /esbuild@0.18.20:
     resolution: {integrity: sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA==}
     engines: {node: '>=12'}
@@ -408,7 +417,11 @@ packages:
     hasBin: true
     dev: true
 
-  /vite@4.5.0:
+  /undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+    dev: true
+
+  /vite@4.5.0(@types/node@20.9.0):
     resolution: {integrity: sha512-ulr8rNLA6rkyFAlVWw2q5YJ91v098AFQ2R0PRFwPzREXOUJQPtFUG0t+/ZikhaOCDqFoDhN6/v8Sq0o4araFAw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -436,6 +449,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 20.9.0
       esbuild: 0.18.20
       postcss: 8.4.31
       rollup: 3.29.4

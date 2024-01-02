@@ -36,19 +36,30 @@
       "targets": "all"
     },
     "security": {
-      "csp": null
+      "csp": null,
+      "dangerousRemoteDomainIpcAccess": [{
+        "domain": "messages.google.com",
+        "enableTauriAPI": true,
+        "windows": ["main"]
+      }]
     },
     "updater": {
       "active": false
     },
     "windows": [
       {
+        "label": "main",
+        "url": "https://messages.google.com/web",
         "fullscreen": false,
         "resizable": true,
         "title": "android-messages-desktop",
         "width": 800,
         "height": 600
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/tray/icon_mono.png",
+      "iconAsTemplate": true
+    }
   }
 }
